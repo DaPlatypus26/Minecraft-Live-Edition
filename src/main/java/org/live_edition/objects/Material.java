@@ -1,10 +1,10 @@
-package org.sandboxgame.objects;
+package org.live_edition.objects;
 
 public enum Material {
-    AIR("air", false, false, "src/main/resources/assets/textures/block/air.png", false,false),
-    DIRT("dirt", true, false, "src/main/resources/assets/textures/block/dirt.png", true, false),
-    GRASS_BLOCK("grass_block", true, false, "src/main/resources/assets/textures/block/grass_block.png", true, false),
-    STONE("stone", true, false, "src/main/resources/assets/textures/block/stone.png", true, false),
+    AIR("air", false, false, "src/main/resources/assets/textures/blocks/air.png", false,false),
+    DIRT("dirt", true, false, "src/main/resources/assets/textures/blocks/dirt.png", true, false),
+    GRASS_BLOCK("grass_block", true, false, "src/main/resources/assets/textures/blocks/grass_block.png", true, false),
+    STONE("stone", true, false, "src/main/resources/assets/textures/blocks/stone.png", true, false),
     SAND("sand", true, true, "", true, false),
     GLASS("glass", true, false, "", false, false);
 

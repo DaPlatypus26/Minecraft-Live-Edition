@@ -1,10 +1,10 @@
-package org.sandboxgame.objects;
+package org.live_edition.objects;
 
 public class Block extends GameObject {
     Material material;
 
-    public Block(String name, int x, int y, Material material) {
-        super(name, x, y);
+    public Block(String name, Material material) {
+        super(name);
         this.material = material;
     }
 

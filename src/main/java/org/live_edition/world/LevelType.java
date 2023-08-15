@@ -1,4 +1,4 @@
-package org.sandboxgame.util.world;
+package org.live_edition.world;
 
 public enum LevelType {
     OVERWORLD,

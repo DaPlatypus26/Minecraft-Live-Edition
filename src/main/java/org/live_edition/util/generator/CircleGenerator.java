@@ -1,4 +1,4 @@
-package org.sandboxgame.util.generator;
+package org.live_edition.util.generator;
 
 public class CircleGenerator {
     public static boolean[][] generate(int radius) {

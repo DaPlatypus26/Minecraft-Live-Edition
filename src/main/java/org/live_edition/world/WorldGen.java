@@ -1,13 +1,13 @@
-package org.sandboxgame.util.world;
+package org.live_edition.world;
 
-import org.sandboxgame.objects.Block;
-import org.sandboxgame.util.generator.LineGenerator;
+import org.live_edition.objects.Block;
+import org.live_edition.util.generator.LineGenerator;
 
 import java.util.Random;
 
 public class WorldGen {
-    public static Block[][] normal(int width, int height, Block[] filler) {
-        Block[][] levelGrid = new Block[width][height];
+    public static Block[][] normal(int width, int height, int seaLevel, Block[] filler) {
+        Block[][] blockGrid = new Block[width][height];
 
         Block air = filler[0]; //new Block("Air", x, y, Material.AIR)
         Block grassBlock = filler[1]; //new Block("Grass Block", x, y, Material.GRASS_BLOCK)
@@ -17,33 +17,33 @@ public class WorldGen {
         //fills the whole world with air blocks
         for(int y = 0; y < height; y++) {
             for(int x = 0; x < width; x++) {
-                levelGrid[x][y] = (Block) air.setPosition(x, y);
+                blockGrid[x][y] = air;
             }
         }
 
         //places the grass and dirt blocks
-        int[] grassLine = LineGenerator.singleLine(width, height/2, height/2 - 5, 9);
+        int[] grassLine = LineGenerator.singleLine(width, seaLevel, seaLevel - 5, 9);
         for(int x = 0; x < width; x++) {
-            levelGrid[x][grassLine[x]] = (Block) grassBlock.setPosition(x, grassLine[x]);
+            blockGrid[x][grassLine[x]] = grassBlock;
             for(int fillY = grassLine[x] + 1; fillY < height; fillY++) {
-                levelGrid[x][fillY] = (Block) dirt.setPosition(x, fillY);
+                blockGrid[x][fillY] = dirt;
             }
         }
 
         //places the stone blocks
-        int[] stoneLine = LineGenerator.singleLine(width, height/2 + 7, height/2 + 2, 7);
+        int[] stoneLine = LineGenerator.singleLine(width, seaLevel + 7, seaLevel + 2, 7);
         for(int x = 0; x < width; x++) {
-            levelGrid[x][stoneLine[x]] = (Block) stone.setPosition(x, stoneLine[x]);
+            blockGrid[x][stoneLine[x]] = stone;
             for(int fillY = stoneLine[x] + 1; fillY < height; fillY++) {
-                levelGrid[x][fillY] = (Block) stone.setPosition(x, fillY);
+                blockGrid[x][fillY] = stone;
             }
         }
 
-        return levelGrid;
+        return blockGrid;
     }
 
-    public static Block[][] flat(int width, int height, Block[] filler) {
-        Block[][] levelGrid = new Block[width][height];
+    public static Block[][] flat(int width, int height, int seaLevel, Block[] filler) {
+        Block[][] blockGrid = new Block[width][height];
 
         Block air = filler[0]; //new Block("Air", x, y, Material.AIR)
         Block grassBlock = filler[1]; //new Block("Grass Block", x, y, Material.GRASS_BLOCK)
@@ -52,39 +52,39 @@ public class WorldGen {
 
         for(int y = 0; y < height; y++) {
             for(int x = 0; x < width; x++) {
-                levelGrid[x][y] = (Block) air.setPosition(x, y);
+                blockGrid[x][y] = air;
             }
         }
 
-        int grassY = height/2 - 5;
+        int grassY = seaLevel - 5;
         for(int x = 0; x < width; x++) {
-            levelGrid[x][grassY] = (Block) grassBlock.setPosition(x, grassY);
+            blockGrid[x][grassY] = grassBlock;
             for(int fillY = grassY + 1; fillY < height; fillY++) {
-                levelGrid[x][fillY] = (Block) dirt.setPosition(x, fillY);
+                blockGrid[x][fillY] = dirt;
             }
         }
 
-        int stoneY = height/2;
+        int stoneY = seaLevel;
         for(int x = 0; x < width; x++) {
-            levelGrid[x][stoneY] = (Block) stone.setPosition(x, stoneY);
+            blockGrid[x][stoneY] = stone;
             for(int fillY = stoneY + 1; fillY < height; fillY++) {
-                levelGrid[x][fillY] = (Block) stone.setPosition(x, fillY);
+                blockGrid[x][fillY] = stone;
             }
         }
 
-        return levelGrid;
+        return blockGrid;
     }
 
     public static Block[][] cave(int width, int height) {
-        Block[][] levelGrid = new Block[width][height];
+        Block[][] blockGrid = new Block[width][height];
 
-        return levelGrid;
+        return blockGrid;
     }
 
     public static Block[][] floatingIsland(int width, int height) {
-        Block[][] levelGrid = new Block[width][height];
+        Block[][] blockGrid = new Block[width][height];
 
-        return levelGrid;
+        return blockGrid;
     }
 
     //creates the rotation grid for indicating which blocks should be rotated

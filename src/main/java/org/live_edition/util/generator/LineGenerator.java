@@ -1,4 +1,4 @@
-package org.sandboxgame.util.generator;
+package org.live_edition.util.generator;
 
 import java.util.Random;
 
