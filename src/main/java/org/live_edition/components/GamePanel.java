@@ -2,12 +2,14 @@ package org.live_edition.components;
 
 import org.live_edition.Main;
 import org.live_edition.objects.Block;
+import org.live_edition.util.ImageTool;
 import org.live_edition.world.World;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
 
 public class GamePanel extends JPanel implements Runnable, KeyListener {
     private Thread thread;
@@ -42,17 +44,29 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Block[][] blockGrid = world.getBlockGrid();
+        Block[][] wallgrid = world.getWallGrid();
 
         setBackground(world.getSkyColor());
 
+        //blockGrid render
         for(int y = 0; y < blockGrid[0].length; y++) {
             for(int x = 0; x < blockGrid.length; x++) {
                 Block block = blockGrid[x][y];
-                String texture = block.getMaterial().getTexture();
+                String blockTexture = block.getMaterial().getTexture();
 
-                if(!texture.isEmpty()) {
-                    ImageIcon imageIcon = new ImageIcon(texture);
-                    Image image = imageIcon.getImage();
+                Block wall = wallgrid[x][y];
+                String wallTexture = wall.getMaterial().getTexture();
+
+                if(!blockTexture.isEmpty()) {
+                    ImageIcon blockImageIcon = new ImageIcon(blockTexture);
+                    Image blockImage = blockImageIcon.getImage();
+
+                    ImageIcon wallImageIcon = new ImageIcon(wallTexture);
+                    BufferedImage wallBufferedImage = ImageTool.convertImageToBufferedImage(wallImageIcon.getImage());
+                    if(!wall.getMaterial().isTransparent()) {
+                        wallBufferedImage = ImageTool.darkerImage(wallBufferedImage, 0.5);
+                    }
+                    Image wallImage = wallBufferedImage;
 
                     //rotate Blocks (Looks more natural)
                     /*if(block.getMaterial().isRotateHorizontal() && world.getRotationGrid()[x][y]) {
@@ -67,7 +81,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
                     int xPos = x * blockSize;
                     int yPos = y * blockSize;
 
-                    g.drawImage(image, xPos, yPos, blockSize, blockSize, this);
+                    //first render wall blocks
+                    g.drawImage(wallImage, xPos, yPos, blockSize, blockSize, this);
+                    g.drawImage(blockImage, xPos, yPos, blockSize, blockSize, this);
                 }
             }
         }

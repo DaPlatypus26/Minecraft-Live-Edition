@@ -5,6 +5,7 @@ import org.live_edition.objects.Material;
 import org.live_edition.util.ImageTool;
 
 import java.awt.*;
+import java.util.List;
 
 public class World {
     private int maxHeight;
@@ -17,7 +18,7 @@ public class World {
     private String skyPalette;
 
     private Block[][] blockGrid;
-    private Block[][] backgroundBlockGrid;
+    private Block[][] wallGrid;
     private int[][] lightLevelGrid;
 
     Block[] overworldFiller;
@@ -47,7 +48,9 @@ public class World {
     }
 
     public void generateLevel() {
-        blockGrid = WorldGen.normal(maxWidth, maxHeight, seaLevel, overworldFiller);
+        List<Block[][]> layers = WorldGen.normal(maxWidth, maxHeight, seaLevel, overworldFiller);
+        blockGrid = layers.get(0);
+        wallGrid = layers.get(1);
         update();
     }
 
@@ -64,8 +67,6 @@ public class World {
             if(getTime() > ImageTool.getImageWidth(skyPalette)) {
                 setTime(0);
             }
-            System.out.println(getTime());
-            System.out.println(getSkyColor().toString());
             setSkyColor(ImageTool.getPixelColor(skyPalette, getTime(), 0));
         }
     }
@@ -118,12 +119,12 @@ public class World {
         this.blockGrid = blockGrid;
     }
 
-    public Block[][] getBackgroundBlockGrid() {
-        return backgroundBlockGrid;
+    public Block[][] getWallGrid() {
+        return wallGrid;
     }
 
-    public void setBackgroundBlockGrid(Block[][] backgroundBlockGrid) {
-        this.backgroundBlockGrid = backgroundBlockGrid;
+    public void setWallGrid(Block[][] wallGrid) {
+        this.wallGrid = wallGrid;
     }
 
     public int[][] getLightLevelGrid() {

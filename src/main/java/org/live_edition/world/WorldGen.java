@@ -3,11 +3,15 @@ package org.live_edition.world;
 import org.live_edition.objects.Block;
 import org.live_edition.util.generator.LineGenerator;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class WorldGen {
-    public static Block[][] normal(int width, int height, int seaLevel, Block[] filler) {
+    public static List<Block[][]> normal(int width, int height, int seaLevel, Block[] filler) {
+        List<Block[][]> layers = new ArrayList<>();
         Block[][] blockGrid = new Block[width][height];
+        Block[][] wallGrid = new Block[width][height];
 
         Block air = filler[0]; //new Block("Air", x, y, Material.AIR)
         Block grassBlock = filler[1]; //new Block("Grass Block", x, y, Material.GRASS_BLOCK)
@@ -15,9 +19,10 @@ public class WorldGen {
         Block stone = filler[3]; //new Block("Stone", x, y, Material.STONE)
 
         //fills the whole world with air blocks
-        for(int y = 0; y < height; y++) {
-            for(int x = 0; x < width; x++) {
+        for(int x = 0; x < width; x++) {
+            for(int y = 0; y < height; y++) {
                 blockGrid[x][y] = air;
+                wallGrid[x][y] = air;
             }
         }
 
@@ -25,8 +30,10 @@ public class WorldGen {
         int[] grassLine = LineGenerator.singleLine(width, seaLevel, seaLevel - 5, 9);
         for(int x = 0; x < width; x++) {
             blockGrid[x][grassLine[x]] = grassBlock;
+            wallGrid[x][grassLine[x]] = grassBlock;
             for(int fillY = grassLine[x] + 1; fillY < height; fillY++) {
                 blockGrid[x][fillY] = dirt;
+                wallGrid[x][fillY] = dirt;
             }
         }
 
@@ -34,12 +41,25 @@ public class WorldGen {
         int[] stoneLine = LineGenerator.singleLine(width, seaLevel + 7, seaLevel + 2, 7);
         for(int x = 0; x < width; x++) {
             blockGrid[x][stoneLine[x]] = stone;
+            wallGrid[x][stoneLine[x]] = stone;
             for(int fillY = stoneLine[x] + 1; fillY < height; fillY++) {
                 blockGrid[x][fillY] = stone;
+                wallGrid[x][fillY] = stone;
             }
         }
 
-        return blockGrid;
+        boolean cave[][] = LineGenerator.caveLine(width, 35, 30, 7, 6);
+        for(int x = 0; x < width; x++) {
+            for(int y = 0; y < height; y++) {
+                if(cave[x][y]) {
+                    blockGrid[x][y] = air;
+                }
+            }
+        }
+
+        layers.add(blockGrid);
+        layers.add(wallGrid);
+        return layers;
     }
 
     public static Block[][] flat(int width, int height, int seaLevel, Block[] filler) {

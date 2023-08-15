@@ -40,9 +40,27 @@ public class LineGenerator {
         return result;
     }
 
-    public static int[][] caveLine(int width, int max1, int min1, int max2, int min2, int length, boolean filled) {
-        int[][] result = new int[width][width];
+    public static boolean[][] caveLine(int width, int max, int min, int height, int length) {
+        boolean[][] result = new boolean[width][width];
 
+        int[] line1 = singleLine(width, max, min, length);
+        int[] line2 = singleLine(width, max + height, min + height, length);
+
+        for(int x = 0; x < width; x++) {
+            for(int y = 0; y < width; y++) {
+                if(line1[x] == y || line2[x] == y) {
+                    result[x][y] = true;
+                }
+            }
+        }
+
+        for(int x = 0; x < width; x++) {
+            for(int y = 0; y < width; y++) {
+                if(result[x][y] && !result[x][y + 1] && y != line2[x]) {
+                    result[x][y + 1] = true;
+                }
+            }
+        }
 
         return result;
     }
