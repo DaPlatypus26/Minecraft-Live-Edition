@@ -48,7 +48,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 
         setBackground(world.getSkyColor());
 
-        //blockGrid render
+        // Renders blockGrid and wallGrid
         for(int y = 0; y < blockGrid[0].length; y++) {
             for(int x = 0; x < blockGrid.length; x++) {
                 Block block = blockGrid[x][y];
@@ -63,25 +63,16 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 
                     ImageIcon wallImageIcon = new ImageIcon(wallTexture);
                     BufferedImage wallBufferedImage = ImageTool.convertImageToBufferedImage(wallImageIcon.getImage());
+                    // Makes non-transparent wall blocks darker
                     if(!wall.getMaterial().isTransparent()) {
                         wallBufferedImage = ImageTool.darkerImage(wallBufferedImage, 0.5);
                     }
                     Image wallImage = wallBufferedImage;
 
-                    //rotate Blocks (Looks more natural)
-                    /*if(block.getMaterial().isRotateHorizontal() && world.getRotationGrid()[x][y]) {
-                        BufferedImage bufferedImage = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-                        Graphics2D g2d = bufferedImage.createGraphics();
-                        g2d.drawImage(image, 0, 0, image.getWidth(null), image.getHeight(null), image.getWidth(null), 0, 0, image.getHeight(null), null);
-                        g2d.dispose();
-
-                        image = bufferedImage;
-                    }*/
-
                     int xPos = x * blockSize;
                     int yPos = y * blockSize;
 
-                    //first render wall blocks
+                    // First render wall blocks
                     g.drawImage(wallImage, xPos, yPos, blockSize, blockSize, this);
                     g.drawImage(blockImage, xPos, yPos, blockSize, blockSize, this);
                 }
@@ -97,6 +88,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
         long currentTime;
         long timer = 0;
 
+        int secTest = 0;
+
         while(thread != null) {
             currentTime = System.nanoTime();
 
@@ -106,6 +99,13 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 
             if(delta >= 1) {
                 update();
+
+                // Seconds counter test
+                if(secTest%fps == 0) {
+                    System.out.println(secTest/fps);
+                }
+                secTest++;
+
                 delta--;
             }
 

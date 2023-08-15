@@ -1,40 +1,13 @@
 package org.live_edition.util;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 
 public class ImageTool {
-    public static int getImageWidth(String imagePath) {
+    public static Color getPixelColor(BufferedImage bufferedImage, int x, int y) {
         try {
-            File imageFile = new File(imagePath);
-            BufferedImage image = ImageIO.read(imageFile);
-            return image.getWidth();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return -1;
-        }
-    }
-
-    public static int getImageHeight(String imagePath) {
-        try {
-            File imageFile = new File(imagePath);
-            BufferedImage image = ImageIO.read(imageFile);
-            return image.getHeight();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return -1;
-        }
-    }
-
-    public static Color getPixelColor(String imagePath, int x, int y) {
-        try {
-            File imageFile = new File(imagePath);
-            BufferedImage image = ImageIO.read(imageFile);
-
-            if (x >= 0 && x < image.getWidth() && y >= 0 && y < image.getHeight()) {
-                return new Color(image.getRGB(x, y));
+            if (x >= 0 && x < bufferedImage.getWidth() && y >= 0 && y < bufferedImage.getHeight()) {
+                return new Color(bufferedImage.getRGB(x, y));
             } else {
                 throw new IllegalArgumentException();
             }
@@ -73,7 +46,7 @@ public class ImageTool {
     public static BufferedImage convertImageToBufferedImage(Image image) {
         BufferedImage bufferedImage = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
 
-        // Create a graphics context and draw the image onto the BufferedImage
+        // Creates a graphics context and draws the image onto the BufferedImage
         bufferedImage.getGraphics().drawImage(image, 0, 0, null);
 
         return bufferedImage;

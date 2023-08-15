@@ -4,7 +4,11 @@ import org.live_edition.objects.Block;
 import org.live_edition.objects.Material;
 import org.live_edition.util.ImageTool;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 public class World {
@@ -14,8 +18,12 @@ public class World {
 
     private int time;
     private int startTime;
+
     private Color skyColor;
-    private String skyPalette;
+    private String skyPalettePath;
+    private File skyPaletteFile;
+    private BufferedImage skyPalette;
+    private Color[] skyPaletteArray;
 
     private Block[][] blockGrid;
     private Block[][] wallGrid;
@@ -28,8 +36,19 @@ public class World {
         this.maxHeight = maxHeight;
         this.seaLevel = seaLevel;
 
-        startTime = 3600;
-        skyPalette = "src/main/resources/assets/textures/sky/sky_palette.png";
+        startTime = 1500;
+        skyPalettePath = "src/main/resources/assets/textures/sky/sky_palette.png";
+        skyPaletteFile = new File(skyPalettePath);
+        try {
+            skyPalette = ImageIO.read(skyPaletteFile);
+        } catch(IOException e) {
+            throw new RuntimeException(e);
+        }
+        skyPaletteArray = new Color[skyPalette.getWidth()];
+
+        for(int i = 0; i < skyPaletteArray.length; i++) {
+            skyPaletteArray[i] = ImageTool.getPixelColor(skyPalette, i, 0);
+        }
 
         overworldFiller = new Block[]{
                 new Block("Air", Material.AIR),
@@ -44,7 +63,7 @@ public class World {
     }
 
     public void loadFromFile() {
-        //if already created world is loaded
+        // If already created world is loaded from world file
     }
 
     public void generateLevel() {
@@ -61,13 +80,13 @@ public class World {
     public void dayNightCycle() {
         if(getSkyColor() == null) {
             setTime(startTime);
-            setSkyColor(ImageTool.getPixelColor(skyPalette, startTime, 0));
+            setSkyColor(skyPaletteArray[startTime]);
         } else {
             setTime(getTime() + 1);
-            if(getTime() > ImageTool.getImageWidth(skyPalette)) {
+            if(getTime() == skyPaletteArray.length) {
                 setTime(0);
             }
-            setSkyColor(ImageTool.getPixelColor(skyPalette, getTime(), 0));
+            setSkyColor(skyPaletteArray[time]);
         }
     }
 
@@ -109,6 +128,38 @@ public class World {
 
     public void setSkyColor(Color skyColor) {
         this.skyColor = skyColor;
+    }
+
+    public String getSkyPalettePath() {
+        return skyPalettePath;
+    }
+
+    public void setSkyPalettePath(String skyPalettePath) {
+        this.skyPalettePath = skyPalettePath;
+    }
+
+    public File getSkyPaletteFile() {
+        return skyPaletteFile;
+    }
+
+    public void setSkyPaletteFile(File skyPaletteFile) {
+        this.skyPaletteFile = skyPaletteFile;
+    }
+
+    public BufferedImage getSkyPalette() {
+        return skyPalette;
+    }
+
+    public void setSkyPalette(BufferedImage skyPalette) {
+        this.skyPalette = skyPalette;
+    }
+
+    public Color[] getSkyPaletteArray() {
+        return skyPaletteArray;
+    }
+
+    public void setSkyPaletteArray(Color[] skyPaletteArray) {
+        this.skyPaletteArray = skyPaletteArray;
     }
 
     public Block[][] getBlockGrid() {
