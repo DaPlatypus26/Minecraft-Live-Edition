@@ -3,6 +3,8 @@ package org.live_edition.world;
 import org.live_edition.objects.Block;
 import org.live_edition.objects.Material;
 import org.live_edition.util.ImageTool;
+import org.live_edition.world.biomes.BiomeType;
+import org.live_edition.world.biomes.BiomesGenerator;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -28,8 +30,8 @@ public class World {
     private Block[][] blockGrid;
     private Block[][] wallGrid;
     private int[][] lightLevelGrid;
-
-    Block[] overworldFiller;
+    private BiomeType[][] biomeGrid;
+    BiomeType[] overworldBiomeFiller;
 
     public World(int maxWidth, int maxHeight, int seaLevel) {
         this.maxWidth = maxWidth;
@@ -49,12 +51,6 @@ public class World {
         for(int i = 0; i < skyPaletteArray.length; i++) {
             skyPaletteArray[i] = ImageTool.getPixelColor(skyPalette, i, 0);
         }
-
-        overworldFiller = new Block[]{
-                new Block("Air", Material.AIR),
-                new Block("Grass Block", Material.GRASS_BLOCK),
-                new Block("Dirt", Material.DIRT),
-                new Block("Stone", Material.STONE)};
     }
 
     public void update() {
@@ -66,9 +62,14 @@ public class World {
     }
 
     public void generateLevel() {
-        List<Block[][]> layers = WorldGen.normal(maxWidth, maxHeight, seaLevel, overworldFiller);
+        biomeGrid = BiomesGenerator.singleBiome(maxWidth, maxHeight, BiomeType.DESERT);
+
+        List<Block[][]> layers = WorldGen.normal(maxWidth, maxHeight, seaLevel, biomeGrid);
         blockGrid = layers.get(0);
         wallGrid = layers.get(1);
+
+        blockGrid[0][0] = new Block("Stone", Material.STONE);
+
         update();
     }
 
@@ -183,5 +184,13 @@ public class World {
 
     public void setLightLevelGrid(int[][] lightLevelGrid) {
         this.lightLevelGrid = lightLevelGrid;
+    }
+
+    public BiomeType[][] getBiomeGrid() {
+        return biomeGrid;
+    }
+
+    public void setBiomeGrid(BiomeType[][] biomeGrid) {
+        this.biomeGrid = biomeGrid;
     }
 }

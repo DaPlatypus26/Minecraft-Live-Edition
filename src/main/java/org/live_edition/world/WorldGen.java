@@ -1,22 +1,21 @@
 package org.live_edition.world;
 
 import org.live_edition.objects.Block;
+import org.live_edition.objects.Material;
 import org.live_edition.util.generator.LineGenerator;
+import org.live_edition.world.biomes.BiomeType;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class WorldGen {
-    public static List<Block[][]> normal(int width, int height, int seaLevel, Block[] filler) {
+    public static List<Block[][]> normal(int width, int height, int seaLevel, BiomeType[][] biomeGrid) {
         List<Block[][]> layers = new ArrayList<>();
         Block[][] blockGrid = new Block[width][height];
         Block[][] wallGrid = new Block[width][height];
 
-        Block air = filler[0]; //new Block("Air", x, y, Material.AIR)
-        Block grassBlock = filler[1]; //new Block("Grass Block", x, y, Material.GRASS_BLOCK)
-        Block dirt = filler[2]; //new Block("Dirt", x, y, Material.DIRT)
-        Block stone = filler[3]; //new Block("Stone", x, y, Material.STONE)
+        Block air = new Block("Air", Material.AIR);
 
         // Fills the whole world with air blocks
         for(int x = 0; x < width; x++) {
@@ -26,25 +25,26 @@ public class WorldGen {
             }
         }
 
+        int[] topLayer = LineGenerator.singleLine(width, seaLevel, seaLevel - 5, 9);
+        int[] stoneLayer = LineGenerator.singleLine(width, seaLevel + 7, seaLevel + 2, 7);
+
         // Places the grass and dirt blocks
-        int[] grassLine = LineGenerator.singleLine(width, seaLevel, seaLevel - 5, 9);
         for(int x = 0; x < width; x++) {
-            blockGrid[x][grassLine[x]] = grassBlock;
-            wallGrid[x][grassLine[x]] = grassBlock;
-            for(int fillY = grassLine[x] + 1; fillY < height; fillY++) {
-                blockGrid[x][fillY] = dirt;
-                wallGrid[x][fillY] = dirt;
+            blockGrid[x][topLayer[x]] = biomeGrid[x][topLayer[x]].getTopLayer();
+            wallGrid[x][topLayer[x]] = biomeGrid[x][topLayer[x]].getTopLayer();
+            for(int fillY = topLayer[x] + 1; fillY < stoneLayer[x]; fillY++) {
+                blockGrid[x][fillY] = biomeGrid[x][fillY].getSecondLayer();
+                wallGrid[x][fillY] = biomeGrid[x][fillY].getSecondLayer();
             }
         }
 
         // Places the stone blocks
-        int[] stoneLine = LineGenerator.singleLine(width, seaLevel + 7, seaLevel + 2, 7);
         for(int x = 0; x < width; x++) {
-            blockGrid[x][stoneLine[x]] = stone;
-            wallGrid[x][stoneLine[x]] = stone;
-            for(int fillY = stoneLine[x] + 1; fillY < height; fillY++) {
-                blockGrid[x][fillY] = stone;
-                wallGrid[x][fillY] = stone;
+            blockGrid[x][stoneLayer[x]] = biomeGrid[x][stoneLayer[x]].getStoneLayer();
+            wallGrid[x][stoneLayer[x]] = biomeGrid[x][stoneLayer[x]].getStoneLayer();
+            for(int fillY = stoneLayer[x] + 1; fillY < height; fillY++) {
+                blockGrid[x][fillY] = biomeGrid[x][fillY].getStoneLayer();
+                wallGrid[x][fillY] = biomeGrid[x][fillY].getStoneLayer();
             }
         }
 
@@ -62,6 +62,7 @@ public class WorldGen {
         return layers;
     }
 
+    // Needs to be reworked
     public static List<Block[][]> flat(int width, int height, int seaLevel, Block[] filler) {
         List<Block[][]> layers = new ArrayList<>();
         Block[][] blockGrid = new Block[width][height];

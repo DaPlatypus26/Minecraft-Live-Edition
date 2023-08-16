@@ -10,6 +10,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
+import java.time.LocalTime;
 
 public class GamePanel extends JPanel implements Runnable, KeyListener {
     private Thread thread;
@@ -54,30 +55,32 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
         // Renders blockGrid and wallGrid
         for(int x = 0; x < blocksPerFramesWidth; x++) {
             for(int y = 0; y < blocksPerFramesHeight; y++) {
-                Block block = blockGrid[x][y];
-                String blockTexture = block.getMaterial().getTexture();
+                if(x < blockGrid.length && y < blockGrid[0].length) {
+                    Block block = blockGrid[x][y];
+                    String blockTexture = block.getMaterial().getTexture();
 
-                Block wall = wallgrid[x][y];
-                String wallTexture = wall.getMaterial().getTexture();
+                    Block wall = wallgrid[x][y];
+                    String wallTexture = wall.getMaterial().getTexture();
 
-                if(!blockTexture.isEmpty()) {
-                    ImageIcon blockImageIcon = new ImageIcon(blockTexture);
-                    Image blockImage = blockImageIcon.getImage();
+                    if(!blockTexture.isEmpty()) {
+                        ImageIcon blockImageIcon = new ImageIcon(blockTexture);
+                        Image blockImage = blockImageIcon.getImage();
 
-                    ImageIcon wallImageIcon = new ImageIcon(wallTexture);
-                    BufferedImage wallBufferedImage = ImageTool.convertImageToBufferedImage(wallImageIcon.getImage());
-                    // Makes non-transparent wall blocks darker
-                    if(!wall.getMaterial().isTransparent()) {
-                        wallBufferedImage = ImageTool.darkerImage(wallBufferedImage, 0.5);
+                        ImageIcon wallImageIcon = new ImageIcon(wallTexture);
+                        BufferedImage wallBufferedImage = ImageTool.convertImageToBufferedImage(wallImageIcon.getImage());
+                        // Makes non-transparent wall blocks darker
+                        if(!wall.getMaterial().isTransparent()) {
+                            wallBufferedImage = ImageTool.darkerImage(wallBufferedImage, 0.5);
+                        }
+                        Image wallImage = wallBufferedImage;
+
+                        int xPos = x * blockSize;
+                        int yPos = y * blockSize;
+
+                        // First render wall blocks
+                        g.drawImage(wallImage, xPos, yPos, blockSize, blockSize, this);
+                        g.drawImage(blockImage, xPos, yPos, blockSize, blockSize, this);
                     }
-                    Image wallImage = wallBufferedImage;
-
-                    int xPos = x * blockSize;
-                    int yPos = y * blockSize;
-
-                    // First render wall blocks
-                    g.drawImage(wallImage, xPos, yPos, blockSize, blockSize, this);
-                    g.drawImage(blockImage, xPos, yPos, blockSize, blockSize, this);
                 }
             }
         }
@@ -105,7 +108,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 
                 // Seconds counter test
                 if(secTest%fps == 0) {
-                    System.out.println(secTest/fps);
+                    System.out.println(LocalTime.now());
                 }
                 secTest++;
 
