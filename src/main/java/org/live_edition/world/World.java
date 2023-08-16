@@ -54,8 +54,7 @@ public class World {
                 new Block("Air", Material.AIR),
                 new Block("Grass Block", Material.GRASS_BLOCK),
                 new Block("Dirt", Material.DIRT),
-                new Block("Stone", Material.STONE)
-        };
+                new Block("Stone", Material.STONE)};
     }
 
     public void update() {

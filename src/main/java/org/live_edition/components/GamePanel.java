@@ -48,9 +48,12 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 
         setBackground(world.getSkyColor());
 
+        int blocksPerFramesWidth = this.getWidth() / blockSize + 1;
+        int blocksPerFramesHeight = this.getHeight() / blockSize + 1;
+
         // Renders blockGrid and wallGrid
-        for(int y = 0; y < blockGrid[0].length; y++) {
-            for(int x = 0; x < blockGrid.length; x++) {
+        for(int x = 0; x < blocksPerFramesWidth; x++) {
+            for(int y = 0; y < blocksPerFramesHeight; y++) {
                 Block block = blockGrid[x][y];
                 String blockTexture = block.getMaterial().getTexture();
 

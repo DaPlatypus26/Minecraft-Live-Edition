@@ -23,7 +23,7 @@ public class Main {
         name = model.getArtifactId();
         version = model.getVersion();
 
-        world = new World(50, 50, 25);
+        world = new World(500, 500, 25);
         world.generateLevel();
 
         frame = new Frame();

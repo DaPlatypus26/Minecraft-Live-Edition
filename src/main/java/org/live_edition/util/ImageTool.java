@@ -6,12 +6,12 @@ import java.awt.image.BufferedImage;
 public class ImageTool {
     public static Color getPixelColor(BufferedImage bufferedImage, int x, int y) {
         try {
-            if (x >= 0 && x < bufferedImage.getWidth() && y >= 0 && y < bufferedImage.getHeight()) {
+            if(x >= 0 && x < bufferedImage.getWidth() && y >= 0 && y < bufferedImage.getHeight()) {
                 return new Color(bufferedImage.getRGB(x, y));
             } else {
                 throw new IllegalArgumentException();
             }
-        } catch (Exception e) {
+        } catch(Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -23,8 +23,8 @@ public class ImageTool {
 
         BufferedImage darkerImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
+        for(int y = 0; y < height; y++) {
+            for(int x = 0; x < width; x++) {
                 Color originalColor = new Color(originalImage.getRGB(x, y));
 
                 int red = originalColor.getRed() - (int) (originalColor.getRed() * darknessFactor);
