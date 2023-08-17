@@ -1,12 +1,12 @@
 package org.live_edition.objects;
 
 public enum Material {
-    AIR("air", false, false, "src/main/resources/assets/textures/block/air.png", false,false, true),
-    DIRT("dirt", true, false, "src/main/resources/assets/textures/block/dirt.png", true, false, false),
-    GRASS_BLOCK("grass_block", true, false, "src/main/resources/assets/textures/block/grass_block.png", true, false, false),
-    STONE("stone", true, false, "src/main/resources/assets/textures/block/stone.png", true, false, false),
-    SAND("sand", true, true, "src/main/resources/assets/textures/block/sand.png", true, false, false),
-    GLASS("glass", true, false, "src/main/resources/assets/textures/block/glass.png", false, false, false);
+    AIR("air", false, false, "assets/textures/block/air.png", false,false, true),
+    DIRT("dirt", true, false, "assets/textures/block/dirt.png", true, false, false),
+    GRASS_BLOCK("grass_block", true, false, "assets/textures/block/grass_block.png", true, false, false),
+    STONE("stone", true, false, "assets/textures/block/stone.png", true, false, false),
+    SAND("sand", true, true, "assets/textures/block/sand.png", true, false, false),
+    GLASS("glass", true, false, "assets/textures/block/glass.png", false, false, false);
 
     String id;
     boolean solid;

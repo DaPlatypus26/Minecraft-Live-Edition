@@ -1,16 +1,11 @@
 package org.live_edition.world;
 
 import org.live_edition.objects.Block;
-import org.live_edition.objects.Material;
 import org.live_edition.util.ImageTool;
 import org.live_edition.world.biomes.BiomeType;
 import org.live_edition.world.biomes.BiomesGenerator;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 public class World {
@@ -22,9 +17,7 @@ public class World {
     private int startTime;
 
     private Color skyColor;
-    private String skyPalettePath;
-    private File skyPaletteFile;
-    private BufferedImage skyPalette;
+    private Image skyPalette;
     private Color[] skyPaletteArray;
 
     private Block[][] blockGrid;
@@ -39,18 +32,9 @@ public class World {
         this.seaLevel = seaLevel;
 
         startTime = 1500;
-        skyPalettePath = "src/main/resources/assets/textures/sky/sky_palette.png";
-        skyPaletteFile = new File(skyPalettePath);
-        try {
-            skyPalette = ImageIO.read(skyPaletteFile);
-        } catch(IOException e) {
-            throw new RuntimeException(e);
-        }
-        skyPaletteArray = new Color[skyPalette.getWidth()];
 
-        for(int i = 0; i < skyPaletteArray.length; i++) {
-            skyPaletteArray[i] = ImageTool.getPixelColor(skyPalette, i, 0);
-        }
+        skyPalette = ImageTool.getImageFromResources("assets/textures/sky/sky_palette.png");
+        skyPaletteArray = ImageTool.getRowColors(skyPalette, 0);
     }
 
     public void update() {
@@ -67,8 +51,6 @@ public class World {
         List<Block[][]> layers = WorldGen.normal(maxWidth, maxHeight, seaLevel, biomeGrid);
         blockGrid = layers.get(0);
         wallGrid = layers.get(1);
-
-        blockGrid[0][0] = new Block("Stone", Material.STONE);
 
         update();
     }
@@ -130,27 +112,11 @@ public class World {
         this.skyColor = skyColor;
     }
 
-    public String getSkyPalettePath() {
-        return skyPalettePath;
-    }
-
-    public void setSkyPalettePath(String skyPalettePath) {
-        this.skyPalettePath = skyPalettePath;
-    }
-
-    public File getSkyPaletteFile() {
-        return skyPaletteFile;
-    }
-
-    public void setSkyPaletteFile(File skyPaletteFile) {
-        this.skyPaletteFile = skyPaletteFile;
-    }
-
-    public BufferedImage getSkyPalette() {
+    public Image getSkyPalette() {
         return skyPalette;
     }
 
-    public void setSkyPalette(BufferedImage skyPalette) {
+    public void setSkyPalette(Image skyPalette) {
         this.skyPalette = skyPalette;
     }
 
@@ -168,6 +134,22 @@ public class World {
 
     public void setBlockGrid(Block[][] blockGrid) {
         this.blockGrid = blockGrid;
+    }
+
+    public Block getBlockAt(int x, int y) {
+        return blockGrid[x][y];
+    }
+
+    public void setBlockAt(int x, int y, Block block) {
+        blockGrid[x][y] = block;
+    }
+
+    public Block getWallBlockAt(int x, int y) {
+        return wallGrid[x][y];
+    }
+
+    public void setWallBlockAt(int x, int y, Block block) {
+        wallGrid[x][y] = block;
     }
 
     public Block[][] getWallGrid() {

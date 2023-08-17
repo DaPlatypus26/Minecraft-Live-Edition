@@ -2,6 +2,7 @@ package org.live_edition.components;
 
 import org.live_edition.Main;
 import org.live_edition.objects.Block;
+import org.live_edition.objects.Material;
 import org.live_edition.util.ImageTool;
 import org.live_edition.world.World;
 
@@ -9,8 +10,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.image.BufferedImage;
 import java.time.LocalTime;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GamePanel extends JPanel implements Runnable, KeyListener {
     private Thread thread;
@@ -19,12 +21,19 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
     private World world;
     private int blockSize;
 
+    private Map<Material, Image> textureCache = new HashMap<>();
+
     public GamePanel() {
         thread = new Thread(this);
         fps = 60;
 
         world = Main.world;
         blockSize = 20;
+
+        Material[] materials = Material.values();
+        for(Material material : materials) {
+            textureCache.put(material, ImageTool.getImageFromResources(material.getTexture()));
+        }
 
         addKeyListener(this);
         setLayout(null);
@@ -44,6 +53,10 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        Graphics2D g2 = (Graphics2D) g;
+
+        System.out.println(LocalTime.now());
+
         Block[][] blockGrid = world.getBlockGrid();
         Block[][] wallgrid = world.getWallGrid();
 
@@ -57,30 +70,21 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
             for(int y = 0; y < blocksPerFramesHeight; y++) {
                 if(x < blockGrid.length && y < blockGrid[0].length) {
                     Block block = blockGrid[x][y];
-                    String blockTexture = block.getMaterial().getTexture();
+                    Image blockTexture = textureCache.get(block.getMaterial());
 
                     Block wall = wallgrid[x][y];
-                    String wallTexture = wall.getMaterial().getTexture();
-
-                    if(!blockTexture.isEmpty()) {
-                        ImageIcon blockImageIcon = new ImageIcon(blockTexture);
-                        Image blockImage = blockImageIcon.getImage();
-
-                        ImageIcon wallImageIcon = new ImageIcon(wallTexture);
-                        BufferedImage wallBufferedImage = ImageTool.convertImageToBufferedImage(wallImageIcon.getImage());
-                        // Makes non-transparent wall blocks darker
-                        if(!wall.getMaterial().isTransparent()) {
-                            wallBufferedImage = ImageTool.darkerImage(wallBufferedImage, 0.5);
-                        }
-                        Image wallImage = wallBufferedImage;
-
-                        int xPos = x * blockSize;
-                        int yPos = y * blockSize;
-
-                        // First render wall blocks
-                        g.drawImage(wallImage, xPos, yPos, blockSize, blockSize, this);
-                        g.drawImage(blockImage, xPos, yPos, blockSize, blockSize, this);
+                    Image wallTexture = textureCache.get(wall.getMaterial());
+                    // Makes non-transparent wall blocks darker
+                    if(!wall.getMaterial().isTransparent()) {
+                        wallTexture = ImageTool.darkerImage(wallTexture, 0.5);
                     }
+
+                    int xPos = x * blockSize;
+                    int yPos = y * blockSize;
+
+                    // First render wall blocks
+                    g2.drawImage(wallTexture, xPos, yPos, blockSize, blockSize, this);
+                    g2.drawImage(blockTexture, xPos, yPos, blockSize, blockSize, this);
                 }
             }
         }
@@ -108,7 +112,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 
                 // Seconds counter test
                 if(secTest%fps == 0) {
-                    System.out.println(LocalTime.now());
+                    //System.out.println(LocalTime.now());
                 }
                 secTest++;
 
